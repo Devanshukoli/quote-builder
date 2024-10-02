@@ -28,7 +28,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
-            ["astro", "npm:4.15.10"]\
+            ["astro", "npm:4.15.10"],\
+            ["typescript", "patch:typescript@npm%3A5.6.2#~builtin<compat/typescript>::version=5.6.2&hash=5da071"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -4038,7 +4039,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["quote-builder", "workspace:."],\
-            ["astro", "npm:4.15.10"]\
+            ["astro", "npm:4.15.10"],\
+            ["typescript", "patch:typescript@npm%3A5.6.2#~builtin<compat/typescript>::version=5.6.2&hash=5da071"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -4683,6 +4685,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/type-fest-npm-4.26.1-274c31182d-7188db3bca.zip/node_modules/type-fest/",\
           "packageDependencies": [\
             ["type-fest", "npm:4.26.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["typescript", [\
+        ["patch:typescript@npm%3A5.6.2#~builtin<compat/typescript>::version=5.6.2&hash=5da071", {\
+          "packageLocation": "./.yarn/cache/typescript-patch-9a2b00cdc2-c084ee1ab8.zip/node_modules/typescript/",\
+          "packageDependencies": [\
+            ["typescript", "patch:typescript@npm%3A5.6.2#~builtin<compat/typescript>::version=5.6.2&hash=5da071"]\
           ],\
           "linkType": "HARD"\
         }]\
