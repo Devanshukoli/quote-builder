@@ -1,3 +1,247 @@
-<h1>
-    Hello.
-</h1>
+---
+// Mock data - replace with actual data fetching logic
+const mockData = {
+  SIC: ["SIC Option 1", "SIC Option 2", "SIC Option 3"],
+  PVT: ["PVT Option 1", "PVT Option 2", "PVT Option 3"],
+  details: [
+    "Floating Market Entry + Tiger Park with Medium Ticket",
+    "City Tour + River Cruise",
+    "Mountain Trek + Local Village Visit",
+  ],
+};
+---
+
+<div class="main-content">
+  <div class="message-container">
+    <p id="message">Welcome to Quote Builder</p>
+  </div>
+
+  <div class="user-inputs">
+    <input type="date" id="check-in-date" name="check-in-date" />
+    <input
+      type="number"
+      id="num-adults"
+      name="num-adults"
+      min="1"
+      placeholder="Number of Adults"
+    />
+    <input
+      type="number"
+      id="num-children"
+      name="num-children"
+      min="0"
+      placeholder="Number of Children"
+    />
+    <input
+      type="text"
+      id="guest-name"
+      name="guest-name"
+      placeholder="Guest Name"
+    />
+  </div>
+
+  <button id="update-content">Update Content</button>
+
+  <div class="options-container">
+    <div class="type-selection">
+      <label>
+        <input type="radio" name="type" value="SIC" id="sic-radio" />
+        SIC
+      </label>
+      <label>
+        <input type="radio" name="type" value="PVT" id="pvt-radio" />
+        PVT
+      </label>
+    </div>
+
+    <div class="option-selection" id="option-selection"></div>
+
+    <div class="detail-selection">
+      {
+        mockData.details.map((detail) => (
+          <label>
+            <input type="checkbox" value={detail} class="detail-checkbox" />
+            {detail}
+          </label>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="selected-items">
+    <h3>Selected Items:</h3>
+    <ul id="selected-items-list"></ul>
+  </div>
+</div>
+
+<script>
+  let selectedType = null;
+  let selectedOption = null;
+  let selectedDetails = [];
+
+  const typeRadios = document.querySelectorAll('input[name="type"]');
+  const optionSelection = document.getElementById("option-selection");
+  const detailCheckboxes = document.querySelectorAll(".detail-checkbox");
+  const selectedItemsList = document.getElementById("selected-items-list");
+  const updateContentButton = document.getElementById("update-content");
+
+  const mockData = {
+    SIC: ["SIC Option 1", "SIC Option 2", "SIC Option 3"],
+    PVT: ["PVT Option 1", "PVT Option 2", "PVT Option 3"],
+  };
+
+  function handleTypeSelect(type) {
+    selectedType = type;
+    selectedOption = null;
+    renderOptions();
+  }
+
+  function handleOptionSelect(option) {
+    selectedOption = option;
+  }
+
+  function handleDetailSelect(detail) {
+    if (!selectedDetails.includes(detail)) {
+      selectedDetails.push(detail);
+      renderSelectedItems();
+    }
+  }
+
+  function handleDetailDeselect(detail) {
+    selectedDetails = selectedDetails.filter((item) => item !== detail);
+    renderSelectedItems();
+  }
+
+  function renderOptions() {
+    optionSelection.innerHTML = "";
+    if (selectedType) {
+      mockData[selectedType].forEach((option) => {
+        const label = document.createElement("label");
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "option";
+        radio.value = option;
+        radio.addEventListener("change", () => handleOptionSelect(option));
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(option));
+        optionSelection.appendChild(label);
+      });
+    }
+  }
+
+  function renderSelectedItems() {
+    selectedItemsList.innerHTML = "";
+    selectedDetails.forEach((detail) => {
+      const li = document.createElement("li");
+      li.textContent = detail;
+      const removeButton = document.createElement("button");
+      removeButton.textContent = "Remove";
+      removeButton.addEventListener("click", () =>
+        handleDetailDeselect(detail)
+      );
+      li.appendChild(removeButton);
+      selectedItemsList.appendChild(li);
+    });
+  }
+
+  typeRadios.forEach((radio) => {
+    radio.addEventListener("change", (e) => handleTypeSelect(e.target.value));
+  });
+
+  detailCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", (e) => {
+      if (e.target.checked) {
+        handleDetailSelect(e.target.value);
+      } else {
+        handleDetailDeselect(e.target.value);
+      }
+    });
+  });
+
+  updateContentButton.addEventListener("click", () => {
+    const checkInDate = document.getElementById("check-in-date").value;
+    const numAdults = document.getElementById("num-adults").value;
+    const numChildren = document.getElementById("num-children").value;
+    const guestName = document.getElementById("guest-name").value;
+
+    // Here you can add logic to update the content based on these inputs
+    console.log("Updating content with:", {
+      checkInDate,
+      numAdults,
+      numChildren,
+      guestName,
+    });
+
+    // For now, let's just update the message
+    document.getElementById("message").textContent =
+      `Quote for ${guestName} - Check-in: ${checkInDate}, Adults: ${numAdults}, Children: ${numChildren}`;
+  });
+</script>
+
+<style>
+  .main-content {
+    padding: 1rem;
+    background-color: #1e1e1e;
+    color: white;
+  }
+
+  .message-container {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: #333;
+    border-radius: 4px;
+  }
+
+  .user-inputs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .user-inputs input {
+    padding: 0.5rem;
+    border: 1px solid #444;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+  }
+
+  button {
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #555;
+  }
+
+  .options-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .type-selection,
+  .option-selection,
+  .detail-selection {
+    margin-bottom: 1rem;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    margin-right: 0.5rem;
+  }
+
+  .selected-items {
+    margin-top: 1rem;
+  }
+</style>
