@@ -200,8 +200,11 @@
 </style>
 
 <script>
-    $('#menu-toggle').click(function(e) {
-        e.preventDefault();
-        $('#wrapper').toggleClass('toggled');
-    })
+   const menuToggle = document.getElementById('menu-toggle');
+   const wrapper = document.getElementById('wrapper');
+
+   menuToggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    wrapper.classList.toggle('toggled');
+   })
 </script>
