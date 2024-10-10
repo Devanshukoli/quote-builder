@@ -12,6 +12,11 @@ const mockData = {
 ---
 
 <div class="main-content">
+
+    <div class="imp-message">
+        <p id="message">For Hotels rates please send email to <a href=''>info@tripsandtrade.com</a>. Individual sightseeing may be costly. Combo rate is always cheaper. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt fugiat doloribus velit dolore necessitatibus odio veniam consequatur magni iste cum hic, laborum quaerat eius voluptatum, distinctio fuga deserunt. Nostrum, ea!</p>
+    </div>
+
   <div class="message-container">
     <p id="message">Welcome to Quote Builder</p>
   </div>
@@ -81,7 +86,7 @@ const mockData = {
 
   const typeRadios = document.querySelectorAll('input[name="type"]');
   const optionSelection = document.getElementById("option-selection");
-  const detailCheckboxes = document.querySelectorAll(".detail-checkbox");
+  export const detailCheckboxes = document.querySelectorAll(".detail-checkbox");
   const selectedItemsList = document.getElementById("selected-items-list");
   const updateContentButton = document.getElementById("update-content");
 
@@ -100,14 +105,14 @@ const mockData = {
     selectedOption = option;
   }
 
-  function handleDetailSelect(detail) {
+  export function handleDetailSelect(detail) {
     if (!selectedDetails.includes(detail)) {
       selectedDetails.push(detail);
       renderSelectedItems();
     }
   }
 
-  function handleDetailDeselect(detail) {
+  export function handleDetailDeselect(detail) {
     selectedDetails = selectedDetails.filter((item) => item !== detail);
     renderSelectedItems();
   }
@@ -148,16 +153,6 @@ const mockData = {
     radio.addEventListener("change", (e) => handleTypeSelect(e.target.value));
   });
 
-  detailCheckboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", (e) => {
-      if (e.target.checked) {
-        handleDetailSelect(e.target.value);
-      } else {
-        handleDetailDeselect(e.target.value);
-      }
-    });
-  });
-
   updateContentButton.addEventListener("click", () => {
     const checkInDate = document.getElementById("check-in-date").value;
     const numAdults = document.getElementById("num-adults").value;
@@ -181,8 +176,8 @@ const mockData = {
 <style>
   .main-content {
     padding: 1rem;
-    background-color: #1e1e1e;
-    color: white;
+    background-color: whitesmoke;
+    color: black;
   }
 
   .message-container {

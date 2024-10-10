@@ -1,5 +1,5 @@
 ---
-
+import icons from 'glyphicons'
 ---
 
 <div id="wrapper">
@@ -23,14 +23,13 @@
     </ul>
   </div>
 
-  <div class="toggle-button">
-    <a href="#menu-toggle" class="btn" id="menu-toggle">
-      <span
-        class="glyphicon glyphicon glyphicon-chevron-right"
-        aria-hidden="true"></span>
-    </a>
-  </div>
-
+ <div class="toggle-button">
+   <a href="#menu-toggle" class="btn" id="menu-toggle">
+     <span class="glyphicon glyphicon-chevron-right" id="chevron-right" aria-hidden="true"></span>
+     <span class="glyphicon glyphicon-chevron-left" id="chevron-left" aria-hidden="true"></span>
+   </a>
+ </div>
+ 
   <!-- Here, I can add page or to load content... -->
 </div>
 
@@ -144,13 +143,21 @@
   background-color: #ffc65d;
 }
 
-.glyphicon-chevron-right {
-  transform: rotate(0deg);
+#chevron-right {
+  transform: rotate(180deg);
   transition: all 0.5s;
 }
   
-#wrapper.toggled .glyphicon-chevron-right {
-  transform: rotate(180deg);
+#wrapper.toggled #chevron-right {
+  transform: rotate(0deg);
+}
+
+#chevron-left {
+  display: none; /* Hide the left chevron by default */
+}
+
+#wrapper.toggled #chevron-left {
+  display: inline-block; /* Show the left chevron when toggled */
 }
 
 /* Scrollbar */
@@ -188,13 +195,13 @@
     position: relative;
     margin-right: 0;
   }
-  
-  .glyphicon-chevron-right {
-	  transform: rotate(180deg);
+
+  #chevron-right {
+    transform: rotate(0deg); /* Chevron pointing left by default */
   }
-  
-  #wrapper.toggled .glyphicon-chevron-right {
-	  transform: rotate(0deg);
+
+  #wrapper.toggled #chevron-right {
+    transform: rotate(180deg); /* Chevron pointing right when toggled */
   }
 }
 </style>
@@ -202,9 +209,20 @@
 <script>
    const menuToggle = document.getElementById('menu-toggle');
    const wrapper = document.getElementById('wrapper');
+   const chevronRight = document.getElementById('chevron-right');
+   const chevronLeft = document.getElementById('chevron-left');
 
    menuToggle.addEventListener('click', (e) => {
     e.preventDefault();
     wrapper.classList.toggle('toggled');
+
+    // Toggle chevron rotation
+    if (wrapper.classList.contains('toggled')) {
+      chevronRight.style.transform = 'rotate(0deg)';
+      chevronLeft.style.display = 'inline-block';
+    } else {
+      chevronRight.style.transform = 'rotate(180deg)';
+      chevronLeft.style.display = 'none';
+    }
    })
 </script>

@@ -3,12 +3,14 @@
 ---
 
 <header class="header">
-  <div class="logo">
-    <span class="logo-placeholder"><a href="#">Company logo</a></span>
+  <div class="company-logo">
+    <!-- <span class="logo-placeholder"><a href="/public/tripsandtrade-logo.png">Company logo</a></span> -->
+    <img src="/public/tripsandtrade-logo.png" alt="company-logo" />
   </div>
- 
-  <div class="logo">
-    <span class="logo-placeholder"><a href="#">Profile Logo</a></span>
+  
+  <div class="profile-logo">
+    <!-- <span class="logo-placeholder"><a href="#">Profile Logo</a></span> -->
+    <img src="/public/profile-avtar.png" alt="profile-logo" />
   </div>
 </header>
 
@@ -22,6 +24,12 @@
     color: white;
   }
 
+  .header img {
+    width: 100px; 
+    height: auto; 
+    margin-right: 20px; 
+  }
+
   .logo {
     flex: 0 0 auto;
   }
@@ -32,5 +40,4 @@
     border-radius: 50%;
     color: white;
   }
-
 </style>
