@@ -13,11 +13,13 @@
     "@astrojs/db": "^0.14.2",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
-    "astro": "^4.15.10",
+    "astro": "^4.16.4",
     "cz-git": "^1.10.1",
     "dotenv": "^16.4.5",
+    "express": "^4.21.1",
     "glyphicons": "^0.2.0",
     "mysql2": "^3.11.3",
+    "nodemailer": "^6.9.15",
     "typescript": "^5.6.2"
   },
   "config": {
