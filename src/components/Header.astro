@@ -1,43 +1,23 @@
 ---
-// You can add any necessary imports here
+
 ---
 
-<header class="header">
-  <div class="company-logo">
-    <!-- <span class="logo-placeholder"><a href="/public/tripsandtrade-logo.png">Company logo</a></span> -->
-    <img src="/public/tripsandtrade-logo.png" alt="company-logo" />
+<header
+  class="fixed top-0 left-0 w-full z-10 flex justify-between items-center px-4 py-2 bg-gray-100 backdrop-blur-lg text-gray-900"
+>
+  <div class="flex">
+    <img
+      src="/public/tripsandtrade-logo.png"
+      alt="company-logo"
+      class="w-24 h-auto mr-4"
+    />
   </div>
-  
-  <div class="profile-logo">
-    <!-- <span class="logo-placeholder"><a href="#">Profile Logo</a></span> -->
-    <img src="/public/profile-avtar.png" alt="profile-logo" />
+
+  <div class="flex">
+    <img
+      src="/public/profile-avtar.png"
+      alt="profile-logo"
+      class="w-12 h-auto"
+    />
   </div>
 </header>
-
-<style>
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background-color: #cbad68;
-    color: white;
-  }
-
-  .header img {
-    width: 100px; 
-    height: auto; 
-    margin-right: 20px; 
-  }
-
-  .logo {
-    flex: 0 0 auto;
-  }
-
-  .logo-placeholder {
-    /* Replace this with your actual logo */
-    padding: 0.5rem;
-    border-radius: 50%;
-    color: white;
-  }
-</style>
