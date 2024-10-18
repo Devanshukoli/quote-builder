@@ -1,242 +1,345 @@
 ---
-// Mock data - replace with actual data fetching logic
-const mockData = {
-  SIC: ["SIC Option 1", "SIC Option 2", "SIC Option 3"],
-  PVT: ["PVT Option 1", "PVT Option 2", "PVT Option 3"],
-  details: [
-    "Floating Market Entry + Tiger Park with Medium Ticket",
-    "City Tour + River Cruise",
-    "Mountain Trek + Local Village Visit",
-  ],
-};
+import { db, Bangkok } from "astro:db";
+
+const bangkok = await db.select().from(Bangkok);
 ---
 
 <div class="main-content">
-
-    <div class="imp-message">
-        <p id="message">For Hotels rates please send email to <a href=''>info@tripsandtrade.com</a>. Individual sightseeing may be costly. Combo rate is always cheaper. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt fugiat doloribus velit dolore necessitatibus odio veniam consequatur magni iste cum hic, laborum quaerat eius voluptatum, distinctio fuga deserunt. Nostrum, ea!</p>
-    </div>
+  <div class="imp-message">
+    <p id="message">
+      For Hotels rates please send email to <a href="">info@tripsandtrade.com</a
+      >. Individual sightseeing may be costly. Combo rate is always cheaper.
+      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt fugiat
+      doloribus velit dolore necessitatibus odio veniam consequatur magni iste
+      cum hic, laborum quaerat eius voluptatum, distinctio fuga deserunt.
+      Nostrum, ea!
+    </p>
+  </div>
 
   <div class="message-container">
     <p id="message">Welcome to Quote Builder</p>
   </div>
 
+  <!-- User Inputs -->
   <div class="user-inputs">
-    <input type="date" id="check-in-date" name="check-in-date" />
-    <input
-      type="number"
-      id="num-adults"
-      name="num-adults"
-      min="1"
-      placeholder="Number of Adults"
-    />
-    <input
-      type="number"
-      id="num-children"
-      name="num-children"
-      min="0"
-      placeholder="Number of Children"
-    />
-    <input
-      type="text"
-      id="guest-name"
-      name="guest-name"
-      placeholder="Guest Name"
-    />
+    <div class="checkin-date" id="checkin-date">
+      <span>Check-in Date:</span>
+      <input type="date" id="check-in-date" name="check-in-date" />
+    </div>
+
+    <div class="num-pax" id="num-pax">
+      <span>Number of Adults:</span>
+      <input
+        type="number"
+        id="num-adults"
+        name="num-adults"
+        min="1"
+        placeholder="Number of Adults"
+      />
+    </div>
+
+    <div class="num-child" id="num-child">
+      <span>Number of Children:</span>
+      <input
+        type="number"
+        id="num-children"
+        name="num-children"
+        min="0"
+        placeholder="Number of Children"
+      />
+    </div>
+
+    <div class="'guest-name" id="guest-name">
+      <span>Guest Name:</span>
+      <input
+        type="text"
+        id="guest-name"
+        name="guest-name"
+        placeholder="Guest Name"
+      />
+    </div>
+  </div>
+
+  <!-- Filter Buttons for destination -->
+  <div class="filter-btn all-btn" id="filter-btn">
+    <button class="filter-btn-sub" id="filter-btn-sub">Phuket</button>
+    <button class="filter-btn-sub" id="filter-btn-sub">Krabi</button>
+    <button class="filter-btn-sub" id="filter-btn-sub">Pattaya</button>
+    <button class="filter-btn-sub" id="filter-btn-sub">Bangkok</button>
+    <button class="filter-btn-sub" id="filter-btn-sub">Koh Samui</button>
+    <button class="filter-btn-sub" id="filter-btn-sub">Hotel</button>
+    <button class="filter-btn-sub" id="filter-btn-sub">Transfer</button>
   </div>
 
   <button id="update-content">Update Content</button>
 
-  <div class="options-container">
-    <div class="type-selection">
-      <label>
-        <input type="radio" name="type" value="SIC" id="sic-radio" />
-        SIC
-      </label>
-      <label>
-        <input type="radio" name="type" value="PVT" id="pvt-radio" />
-        PVT
-      </label>
+  <div class="dashboard">
+    <div class="">
+      <div class="sic">sic part</div>
+      <div class="pvt">PVT part</div>
+      <div class="description">
+        <!-- Here will fetch data from database.-->
+        <div class="info-desc"></div>
+        <!-- filter button -->
+        <div class="filter-btn"></div>
+      </div>
     </div>
-
-    <div class="option-selection" id="option-selection"></div>
-
-    <div class="detail-selection">
+    <div class="">
+      <!-- here will show selected items. -->
+    </div>
+    <div>
       {
-        mockData.details.map((detail) => (
-          <label>
-            <input type="checkbox" value={detail} class="detail-checkbox" />
-            {detail}
-          </label>
-        ))
+        bangkok.map(
+          ({
+            // id,
+            name,
+            sic_cost_pp,
+            tkt_net_cost,
+            transfer_rates_car,
+            transfer_rates_suv,
+            transfer_rates_van,
+          }) => (
+            <article>
+              {/* <p>id: {id}</p> */}
+              <p>name: {name}</p>
+              <p>sic_cost_pp: {sic_cost_pp}</p>
+              <p>tkt_net_cost: {tkt_net_cost}</p>
+              <p>transfer_rates_car: {transfer_rates_car}</p>
+              <p>transfer_rates_suv: {transfer_rates_suv}</p>
+              <p>transfer_rates_van: {transfer_rates_van}</p>
+            </article>
+          )
+        )
       }
     </div>
   </div>
 
-  <div class="selected-items">
-    <h3>Selected Items:</h3>
-    <ul id="selected-items-list"></ul>
-  </div>
-</div>
+  <script>
+    let selectedType = null;
+    let selectedOption = null;
+    let selectedDetails = [];
+    let bangkokData = [];
 
-<script>
-  let selectedType = null;
-  let selectedOption = null;
-  let selectedDetails = [];
+    const typeRadios = document.querySelectorAll('input[name="type"]');
+    const optionSelection = document.getElementById("option-selection");
+    export const detailCheckboxes =
+      document.querySelectorAll(".detail-checkbox");
+    const selectedItemsList = document.getElementById("selected-items-list");
+    const updateContentButton = document.getElementById("update-content");
 
-  const typeRadios = document.querySelectorAll('input[name="type"]');
-  const optionSelection = document.getElementById("option-selection");
-  export const detailCheckboxes = document.querySelectorAll(".detail-checkbox");
-  const selectedItemsList = document.getElementById("selected-items-list");
-  const updateContentButton = document.getElementById("update-content");
+    // Fetch data from database
+    async function fetchData() {}
 
-  const mockData = {
-    SIC: ["SIC Option 1", "SIC Option 2", "SIC Option 3"],
-    PVT: ["PVT Option 1", "PVT Option 2", "PVT Option 3"],
-  };
+    fetchData();
 
-  function handleTypeSelect(type) {
-    selectedType = type;
-    selectedOption = null;
-    renderOptions();
-  }
+    function handleTypeSelect(type) {
+      selectedType = type;
+      selectedOption = null;
+      renderOptions();
+    }
 
-  function handleOptionSelect(option) {
-    selectedOption = option;
-  }
+    function handleOptionSelect(option) {
+      selectedOption = option;
+    }
 
-  export function handleDetailSelect(detail) {
-    if (!selectedDetails.includes(detail)) {
-      selectedDetails.push(detail);
+    export function handleDetailSelect(detail) {
+      if (!selectedDetails.includes(detail)) {
+        selectedDetails.push(detail);
+        renderSelectedItems();
+      }
+    }
+
+    export function handleDetailDeselect(detail) {
+      selectedDetails = selectedDetails.filter((item) => item !== detail);
       renderSelectedItems();
     }
-  }
 
-  export function handleDetailDeselect(detail) {
-    selectedDetails = selectedDetails.filter((item) => item !== detail);
-    renderSelectedItems();
-  }
+    function renderOptions() {
+      optionSelection.innerHTML = "";
+      if (selectedType) {
+        bangkokData.forEach((option) => {
+          const label = document.createElement("label");
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = "option";
+          radio.value = option.name;
+          radio.addEventListener("change", () =>
+            handleOptionSelect(option.name)
+          );
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(option.name));
+          optionSelection.appendChild(label);
+        });
+      }
+    }
 
-  function renderOptions() {
-    optionSelection.innerHTML = "";
-    if (selectedType) {
-      mockData[selectedType].forEach((option) => {
-        const label = document.createElement("label");
-        const radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = "option";
-        radio.value = option;
-        radio.addEventListener("change", () => handleOptionSelect(option));
-        label.appendChild(radio);
-        label.appendChild(document.createTextNode(option));
-        optionSelection.appendChild(label);
+    function renderSelectedItems() {
+      selectedItemsList.innerHTML = "";
+      selectedDetails.forEach((detail) => {
+        const li = document.createElement("li");
+        li.textContent = detail;
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Remove";
+        removeButton.addEventListener("click", () =>
+          handleDetailDeselect(detail)
+        );
+        li.appendChild(removeButton);
+        selectedItemsList.appendChild(li);
       });
     }
-  }
 
-  function renderSelectedItems() {
-    selectedItemsList.innerHTML = "";
-    selectedDetails.forEach((detail) => {
-      const li = document.createElement("li");
-      li.textContent = detail;
-      const removeButton = document.createElement("button");
-      removeButton.textContent = "Remove";
-      removeButton.addEventListener("click", () =>
-        handleDetailDeselect(detail)
-      );
-      li.appendChild(removeButton);
-      selectedItemsList.appendChild(li);
-    });
-  }
-
-  typeRadios.forEach((radio) => {
-    radio.addEventListener("change", (e) => handleTypeSelect(e.target.value));
-  });
-
-  updateContentButton.addEventListener("click", () => {
-    const checkInDate = document.getElementById("check-in-date").value;
-    const numAdults = document.getElementById("num-adults").value;
-    const numChildren = document.getElementById("num-children").value;
-    const guestName = document.getElementById("guest-name").value;
-
-    // Here you can add logic to update the content based on these inputs
-    console.log("Updating content with:", {
-      checkInDate,
-      numAdults,
-      numChildren,
-      guestName,
+    typeRadios.forEach((radio) => {
+      radio.addEventListener("change", (e) => handleTypeSelect(e.target.value));
     });
 
-    // For now, let's just update the message
-    document.getElementById("message").textContent =
-      `Quote for ${guestName} - Check-in: ${checkInDate}, Adults: ${numAdults}, Children: ${numChildren}`;
-  });
-</script>
+    updateContentButton.addEventListener("click", () => {
+      const checkInDate = document.getElementById("check-in-date").value;
+      const numAdults = document.getElementById("num-adults").value;
+      const numChildren = document.getElementById("num-children").value;
+      const guestName = document.getElementById("guest-name").value;
 
-<style>
-  .main-content {
-    padding: 1rem;
-    background-color: whitesmoke;
-    color: black;
-  }
+      // Here you can add logic to update the content based on these inputs
+      console.log("Updating content with:", {
+        checkInDate,
+        numAdults,
+        numChildren,
+        guestName,
+      });
 
-  .message-container {
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    background-color: #333;
-    border-radius: 4px;
-  }
+      // For now, let's just update the message
+      document.getElementById("message").textContent =
+        `Quote for ${guestName} - Check-in: ${checkInDate}, Adults: ${numAdults}, Children: ${numChildren}`;
+    });
+  </script>
 
-  .user-inputs {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
+  <style>
+    .main-content {
+      padding-top: 5rem;
+      margin-left: 1px;
+      background-color: whitesmoke;
+      color: black;
+    }
 
-  .user-inputs input {
-    padding: 0.5rem;
-    border: 1px solid #444;
-    background-color: #333;
-    color: white;
-    border-radius: 4px;
-  }
+    .message-container {
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      background-color: grey;
+      border-radius: 4px;
+    }
 
-  button {
-    margin-bottom: 1rem;
-    padding: 0.5rem 1rem;
-    background-color: #444;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+    .user-inputs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: center; /* Align items to the same baseline */
+    }
 
-  button:hover {
-    background-color: #555;
-  }
+    .user-inputs > div {
+      /* Target direct children for better control */
+      flex: 1; /* Distribute available space equally */
+      margin-bottom: 0; /* Remove default margin for better alignment */
+    }
 
-  .options-container {
-    display: flex;
-    flex-direction: column;
-  }
+    .user-inputs span {
+      display: inline-block; /* Allow for width and margin */
+      margin-right: 0.5rem;
+    }
 
-  .type-selection,
-  .option-selection,
-  .detail-selection {
-    margin-bottom: 1rem;
-  }
+    .user-inputs input {
+      padding: 0.5rem;
+      border: 1px solid #ccc; /* Use a lighter border color */
+      border-radius: 4px;
+      width: 100%; /* Ensure inputs take up full width */
+      box-sizing: border-box; /* Include padding and border in element's total width */
+    }
 
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
+    /* Optional: Placeholder styling for a modern feel */
+    .user-inputs input::placeholder {
+      color: black; /* Light gray placeholder text */
+    }
 
-  input[type="radio"],
-  input[type="checkbox"] {
-    margin-right: 0.5rem;
-  }
+    /* filter button css */
+    .all-btn {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
+      align-content: center;
+    }
 
-  .selected-items {
-    margin-top: 1rem;
-  }
-</style>
+    .filter-btn-sub {
+      box-sizing: border-box;
+      appearance: none;
+      background-color: transparent;
+      border: 2px solid #3498db;
+      border-radius: 0.6em;
+      color: #3498db;
+      cursor: pointer;
+      display: flex;
+      align-self: center;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1;
+      margin: 20px;
+      padding: 1.2em 2.8em;
+      text-decoration: none;
+      text-align: center;
+      text-transform: uppercase;
+      font-family: "Montserrat", sans-serif;
+      font-weight: 700;
+
+      &:hover,
+      &:focus {
+        color: #fff;
+        outline: 0;
+      }
+    }
+    .filter-btn-sub {
+      transition:
+        box-shadow 300ms ease-in-out,
+        color 300ms ease-in-out;
+      &:hover {
+        box-shadow: 0 0 40px 40px $red inset;
+      }
+    }
+
+    button {
+      margin-bottom: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #7971e4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #4ea7df;
+    }
+
+    .options-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .type-selection,
+    .option-selection,
+    .detail-selection {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+
+    .selected-items {
+      margin-top: 1rem;
+    }
+  </style>
+</div>
