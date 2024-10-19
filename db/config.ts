@@ -13,6 +13,17 @@ const Bangkok = defineTable({
   }
 })
 
+const Pattaya = defineTable({
+  columns: {
+    id: column.number(),
+    name: column.text(),
+    sic_cost_pp: column.number(),
+    tkt_net_cost: column.number(),
+    transfer_rates_van: column.number(),
+    pickup_time_sic: column.text()
+  }
+})
+
 export default defineDb({
-  tables: { Bangkok }
+  tables: { Bangkok, Pattaya }
 });
