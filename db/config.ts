@@ -44,6 +44,27 @@ const Chiangmai = defineTable({
   }
 })
 
+const Kohsamui = defineTable({
+  columns: {
+    id: column.number(),
+    name: column.text(),
+    sic_cost_pp: column.number(),
+    child_cost: column.number(),
+  }
+})
+
+const Phuket = defineTable({
+  columns: {
+    id: column.number(),
+    name: column.text(),
+    sic_cost_pp: column.number(),
+    child_cost: column.number(),
+    tkt_net_cost: column.number(),
+    transfer_rates_car: column.number(),
+    transfer_rates_van: column.number(),
+  }
+})
+
 export default defineDb({
-  tables: { Bangkok, Pattaya, Krabi, Chiangmai }
+  tables: { Bangkok, Pattaya, Krabi, Chiangmai, Kohsamui, Phuket }
 });
