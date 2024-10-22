@@ -82,72 +82,38 @@ const tableColumns = [
             <th class="px-4 py-2 border border-black">Description</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td class="px-4 py-2 border border-black text-center"
-              ><input type="radio" name="sic" class="radio" /></td
-            >
-            <td class="px-4 py-2 border border-black text-center"
-              ><input type="radio" name="pvt" class="radio" /></td
-            >
-            <td class="px-4 py-2 border border-black">Here comes the details</td
-            >
-          </tr>
-          <tr>
-            <td class="px-4 py-2 border border-black text-center"
-              ><input type="radio" name="sic" class="radio" /></td
-            >
-            <td class="px-4 py-2 border border-black text-center"
-              ><input type="radio" name="pvt" class="radio" /></td
-            >
-            <td class="px-4 py-2 border border-black">Here comes the details</td
-            >
-          </tr>
-          <tr>
-            <td class="px-4 py-2 border border-black text-center"
-              ><input type="radio" name="sic" class="radio" /></td
-            >
-            <td class="px-4 py-2 border border-black text-center"
-              ><input type="radio" name="pvt" class="radio" /></td
-            >
-            <td class="px-4 py-2 border border-black">Here comes the details</td
-            >
-          </tr>
-          <tr>
-            <td class="px-4 py-2 border border-black text-center"
-              ><input type="radio" name="sic" class="radio" /></td
-            >
-            <td class="px-4 py-2 border border-black text-center"
-              ><input type="radio" name="pvt" class="radio" /></td
-            >
-            <td class="px-4 py-2 border border-black">Here comes the details</td
-            >
-          </tr>
-          <tr>
-            <td class="px-4 py-2 border border-black text-center"
-              ><input type="radio" name="sic" class="radio" /></td
-            >
-            <td class="px-4 py-2 border border-black text-center"
-              ><input type="radio" name="pvt" class="radio" /></td
-            >
-            <td class="px-4 py-2 border border-black">Here comes the details</td
-            >
-          </tr>
+
+        <tbody class='rounded-md'>
+          <!-- Loop through the data and create table rows -->
+          {bangkok.map((item) => (
+            <tr>
+              <td class="px-4 py-2 border border-black text-center">
+                <input type="radio" name="sic" class="radio" />
+              </td>
+              <td class="px-4 py-2 border border-black text-center">
+                <input type="radio" name="pvt" class="radio" />
+              </td>
+              <td class="px-4 py-2 border border-black">{item.name}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
-
-
+      <!-- End of the table -->
     </div>
+
+    <!-- Selected info will show here in tabluar format. -->
     <div id="detail-box" class="box p-4 bg-gray-800">
-      <!-- Details will be shown here -->
+      <!-- how can i able to propogate the selected data from the above table -->
+      
     </div>
+    <!-- End of the format... -->
 
+    <!-- Reset & Submit Buttons -->
     <div class="flex justify-end">
       <button class="action-button mr-2">Reset</button>
       <button class="action-button">Submit</button>
     </div>
-
-
+    
   </div>
 </div>
 
