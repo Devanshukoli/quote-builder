@@ -20,10 +20,30 @@ const Pattaya = defineTable({
     sic_cost_pp: column.number(),
     tkt_net_cost: column.number(),
     transfer_rates_van: column.number(),
-    pickup_time_sic: column.text()
+  }
+})
+
+const Krabi = defineTable({
+  columns: {
+    id: column.number(),
+    name: column.text(),
+    sic_cost_pp: column.number(),
+    child_cost: column.number(),
+    tkt_net_cost: column.number(),
+    transfer_rates_car: column.number(),
+    transfer_rates_van: column.number(),
+  }
+})
+
+const Chiangmai = defineTable({
+  columns: {
+    id: column.number(),
+    name: column.text(),
+    sic_cost_pp: column.number(),
+    child_cost: column.number(),
   }
 })
 
 export default defineDb({
-  tables: { Bangkok, Pattaya }
+  tables: { Bangkok, Pattaya, Krabi, Chiangmai }
 });
