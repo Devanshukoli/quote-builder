@@ -1,9 +1,31 @@
 ---
-import { db, Bangkok, Pattaya } from "astro:db";
+import {
+  db,
+  Bangkok,
+  Pattaya,
+  Phuket,
+  Krabi,
+  Kohsamui,
+  Chiangmai,
+} from "astro:db";
 
 // fetching data from the selected table.
 const bangkok = await db.select().from(Bangkok);
 const pattaya = await db.select().from(Pattaya);
+const phuket = await db.select().from(Phuket);
+const krabi = await db.select().from(Krabi);
+const kohsamui = await db.select().from(Kohsamui);
+const chiangmai = await db.select().from(Chiangmai);
+
+// Store data in a way that's accessible to the client-side
+const locationsData = {
+  bangkok,
+  pattaya,
+  phuket,
+  krabi,
+  kohsamui,
+  chiangmai,
+};
 
 // defining the columns that I want to display.
 const tableColumns = [
@@ -11,10 +33,17 @@ const tableColumns = [
   { name: "pvt", type: "radio" },
   { name: "Description", type: "text" },
 ];
+
+// Initial data to display (Bangkok by default)
+let currentData = bangkok;
+
+// // Function to update currentData (make it reactive)
+function updateCurrentData(newData) {
+  currentData = newData;
+}
 ---
 
 <div class="main-content">
-
   <div class="message-container">
     <p id="message">Welcome to Quote Builder</p>
   </div>
@@ -61,19 +90,18 @@ const tableColumns = [
 
   <!-- Filter Buttons for destination -->
   <div class="filter-btn all-btn" id="filter-btn">
-    <button class="filter-btn-sub" id="filter-btn-sub">Phuket</button>
-    <button class="filter-btn-sub" id="filter-btn-sub">Krabi</button>
-    <button class="filter-btn-sub" id="filter-btn-sub">Pattaya</button>
-    <button class="filter-btn-sub" id="filter-btn-sub">Bangkok</button>
-    <button class="filter-btn-sub" id="filter-btn-sub">Koh Samui</button>
-    <button class="filter-btn-sub" id="filter-btn-sub">Hotel</button>
-    <button class="filter-btn-sub" id="filter-btn-sub">Transfer</button>
+    <button class="filter-btn-sub" name="phuket">Phuket</button>
+    <button class="filter-btn-sub" name="krabi">Krabi</button>
+    <button class="filter-btn-sub" name="pattaya">Pattaya</button>
+    <button class="filter-btn-sub" name="bangkok">Bangkok</button>
+    <button class="filter-btn-sub" name="kohsamui">Koh Samui</button>
+    <button class="filter-btn-sub" name="chiangmai">Chiang Mai</button>
+    <!-- <button class="filter-btn-sub" name='hotel'>Hotel</button> -->
+    <!-- <button class="filter-btn-sub" name='transfer'>Transfer</button> -->
   </div>
 
   <div class="grid grid-cols-2 gap-4 mb-4">
     <div class="box p-4 bg-yellow-800">
-      <!-- Now here will come all the relevent info from database. -->
-
       <table class="table-auto w-full bg-white text-black border border-black">
         <thead>
           <tr>
@@ -83,28 +111,29 @@ const tableColumns = [
           </tr>
         </thead>
 
-        <tbody class='rounded-md'>
+        <tbody class="rounded-md" id="table-body">
           <!-- Loop through the data and create table rows -->
-          {bangkok.map((item) => (
-            <tr>
-              <td class="px-4 py-2 border border-black text-center">
-                <input type="radio" name="sic" class="radio" />
-              </td>
-              <td class="px-4 py-2 border border-black text-center">
-                <input type="radio" name="pvt" class="radio" />
-              </td>
-              <td class="px-4 py-2 border border-black">{item.name}</td>
-            </tr>
-          ))}
+          {
+            currentData.map((item) => (
+              <tr>
+                <td class="px-4 py-2 border border-black text-center">
+                  <input type="radio" name="sic" class="radio" />
+                </td>
+                <td class="px-4 py-2 border border-black text-center">
+                  <input type="radio" name="pvt" class="radio" />
+                </td>
+                <td class="px-4 py-2 border border-black">{item.name}</td>
+              </tr>
+            ))
+          }
         </tbody>
       </table>
       <!-- End of the table -->
     </div>
 
     <!-- Selected info will show here in tabluar format. -->
-    <div id="detail-box" class="box p-4 bg-gray-800">
+    <div id="detail-box" class="box p-4 bg-white-800">
       <!-- how can i able to propogate the selected data from the above table -->
-      
     </div>
     <!-- End of the format... -->
 
@@ -113,148 +142,76 @@ const tableColumns = [
       <button class="action-button mr-2">Reset</button>
       <button class="action-button">Submit</button>
     </div>
-    
   </div>
 </div>
 
-<script>
-  let selectedType = null;
-  let selectedOption = null;
-  let selectedDetails = [];
-  let bangkokData = [];
+<script is:inline>
+  console.log("came here.1111");
+  //  const locationsData = JSON.parse({!JSON.stringify(locationsData)!});
+  const locationsData = JSON.parse("{!locationsData!}");
+  
+  let currentData = locationsData.phuket; 
 
-  const typeRadios = document.querySelectorAll('input[name="type"]');
-  const optionSelection = document.getElementById("option-selection");
-  export const detailCheckboxes = document.querySelectorAll(".detail-checkbox");
-  const selectedItemsList = document.getElementById("selected-items-list");
-  const updateContentButton = document.getElementById("update-content");
-
-
-  function handleTypeSelect(type) {
-    selectedType = type;
-    selectedOption = null;
-    renderOptions();
-  }
-
-  function handleOptionSelect(option) {
-    selectedOption = option;
-  }
-
-  export function handleDetailSelect(detail) {
-    if (!selectedDetails.includes(detail)) {
-      selectedDetails.push(detail);
-      renderSelectedItems();
-    }
-  }
-
-  export function handleDetailDeselect(detail) {
-    selectedDetails = selectedDetails.filter((item) => item !== detail);
-    renderSelectedItems();
-  }
-
-  function renderOptions() {
-    optionSelection.innerHTML = "";
-    if (selectedType) {
-      bangkokData.forEach((option) => {
-        const label = document.createElement("label");
-        const radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = "option";
-        radio.value = option.name;
-        radio.addEventListener("change", () => handleOptionSelect(option.name));
-        label.appendChild(radio);
-        label.appendChild(document.createTextNode(option.name));
-        optionSelection.appendChild(label);
-      });
-    }
-  }
-
-  function renderSelectedItems() {
-    selectedItemsList.innerHTML = "";
-    selectedDetails.forEach((detail) => {
-      const li = document.createElement("li");
-      li.textContent = detail;
-      const removeButton = document.createElement("button");
-      removeButton.textContent = "Remove";
-      removeButton.addEventListener("click", () =>
-        handleDetailDeselect(detail)
-      );
-      li.appendChild(removeButton);
-      selectedItemsList.appendChild(li);
-    });
-  }
-
-  typeRadios.forEach((radio) => {
-    radio.addEventListener("change", (e) => handleTypeSelect(e.target.value));
-  });
-
-  updateContentButton.addEventListener("click", () => {
-    const checkInDate = document.getElementById("check-in-date").value;
-    const numAdults = document.getElementById("num-adults").value;
-    const numChildren = document.getElementById("num-children").value;
-    const guestName = document.getElementById("guest-name").value;
-
-    // Here you can add logic to update the content based on these inputs
-    console.log("Updating content with:", {
-      checkInDate,
-      numAdults,
-      numChildren,
-      guestName,
-    });
-
-    // For now, let's just update the message
-    document.getElementById("message").textContent =
-      `Quote for ${guestName} - Check-in: ${checkInDate}, Adults: ${numAdults}, Children: ${numChildren}`;
-  });
-
-  // Filter button working script below...
   const filterButtons = document.querySelectorAll(".filter-btn-sub");
-  filterButtons.forEach((button) => {
-    button.addEventListener("click", (event) => {
-      const table = event.target.dataset.table;
-      let data;
+  const tableBody = document.getElementById("table-body");
 
-      // Fetch data from selected table
-      if (table === "Bangkok") {
-        data = bangkok;
-      } else if (table === "Pattaya") {
-        data = pattaya;
-      } else {
-        // other last table
+  function updateTable(newData) {
+    tableBody.innerHTML = "";
+
+    newData.forEach((item) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+         <td class="px-4 py-2 border border-black text-center">
+           <input type="radio" name="sic" class="radio" value="${item.sic}" /> 
+         </td>
+         <td class="px-4 py-2 border border-black text-center">
+           <input type="radio" name="pvt" class="radio" value="${item.pvt}" /> 
+         </td>
+         <td class="px-4 py-2 border border-black">${item.name}</td>
+       `;
+      tableBody.appendChild(row);
+    });
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const location = button.name.toLowerCase();
+      currentData = locationsData[location];
+      updateTable(currentData);
+    });
+  });
+
+  updateTable(currentData);
+  console.log("came here.");
+  // logic for detail-box handling...
+  const detailbox = document.getElementById("detail-box");
+  console.log("came here.");
+  tableBody.addEventListener("click", (event) => {
+    alert("clicked.");
+    const target = event.target;
+
+    if (target.classList.contains("radio")) {
+      const row = target.closest("tr");
+      const sic = row.dataset.sic;
+      const pvt = row.dataset.pvt;
+      const description = row.dataset.description;
+
+      let selectedType = "";
+      let selectedValue = "";
+
+      if (target.name === "sic") {
+        selectedType = "SIC";
+        selectedValue = sic;
+      } else if (target.name === "pvt") {
+        selectedType = "PVT";
+        selectedValue = pvt;
       }
 
-      // Update the table content
-      const tableBody = document.querySelector("tbody");
-      tableBody.innerHTML = ""; // clear Existing rows
-
-      // Add new rows based on the fetched data
-      data.forEach((item) => {
-        const row = document.createElement("tr");
-        tableColumns.forEach(({ name, type }) => {
-          const call = document.createElement("td");
-          cell.classList.add(
-            "px-4",
-            "py-2",
-            "border",
-            "border-black",
-            "text-center"
-          );
-
-          if (type === "radio") {
-            const radio = document.createElement("input");
-            radio.type = "radio";
-            radio.name = name;
-            radio.classList.add("radio");
-            radio.value = item[name];
-            cell.appendChild(radio);
-          } else if (type === "text") {
-            cell.textContent = item[name];
-          } 
-          row.appendChild(cell);
-        });
-        tableBody.appendChild(row);
-      });
-    });
+      detailbox.innerHTML = `
+        <p><strong>${selectedType}:</strong> ${selectedValue}</p>
+        <p><strong>Description:</strong> ${description}</p>
+      `;
+    }
   });
 </script>
 
