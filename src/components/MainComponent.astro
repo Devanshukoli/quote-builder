@@ -115,7 +115,7 @@ function updateCurrentData(newData) {
           <!-- Loop through the data and create table rows -->
           {
             currentData.map((item) => (
-              <tr>
+              <tr data-sic={item.sic} data-pvt={item.pvt} data-description={item.name}>
                 <td class="px-4 py-2 border border-black text-center">
                   <input type="radio" name="sic" class="radio" />
                 </td>
@@ -146,55 +146,23 @@ function updateCurrentData(newData) {
 </div>
 
 <script is:inline>
-  console.log("came here.1111");
-  //  const locationsData = JSON.parse({!JSON.stringify(locationsData)!});
-  const locationsData = JSON.parse("{!locationsData!}");
-  
-  let currentData = locationsData.phuket; 
-
-  const filterButtons = document.querySelectorAll(".filter-btn-sub");
-  const tableBody = document.getElementById("table-body");
-
-  function updateTable(newData) {
-    tableBody.innerHTML = "";
-
-    newData.forEach((item) => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-         <td class="px-4 py-2 border border-black text-center">
-           <input type="radio" name="sic" class="radio" value="${item.sic}" /> 
-         </td>
-         <td class="px-4 py-2 border border-black text-center">
-           <input type="radio" name="pvt" class="radio" value="${item.pvt}" /> 
-         </td>
-         <td class="px-4 py-2 border border-black">${item.name}</td>
-       `;
-      tableBody.appendChild(row);
-    });
-  }
-
-  filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const location = button.name.toLowerCase();
-      currentData = locationsData[location];
-      updateTable(currentData);
-    });
-  });
-
-  updateTable(currentData);
-  console.log("came here.");
   // logic for detail-box handling...
+  const tableBody = document.getElementById("table-body");
   const detailbox = document.getElementById("detail-box");
   console.log("came here.");
   tableBody.addEventListener("click", (event) => {
-    alert("clicked.");
     const target = event.target;
 
+    alert('click')
     if (target.classList.contains("radio")) {
       const row = target.closest("tr");
       const sic = row.dataset.sic;
       const pvt = row.dataset.pvt;
       const description = row.dataset.description;
+      console.log('row', row)
+      console.log('sic', sic)
+      console.log('pvt', pvt)
+      console.log('description', description)
 
       let selectedType = "";
       let selectedValue = "";
