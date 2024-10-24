@@ -149,11 +149,14 @@ function updateCurrentData(newData) {
   // logic for detail-box handling...
   const tableBody = document.getElementById("table-body");
   const detailbox = document.getElementById("detail-box");
-  console.log("came here.");
+
+  detailbox.innerHTML = '<ul id="selected-items-list"></ul>';
+  const selectedItemsList = document.getElementById('selected-items-list');
+
   tableBody.addEventListener("click", (event) => {
     const target = event.target;
 
-    alert('click')
+    // alert('click')
     if (target.classList.contains("radio")) {
       const row = target.closest("tr");
       const sic = row.dataset.sic;
@@ -175,10 +178,12 @@ function updateCurrentData(newData) {
         selectedValue = pvt;
       }
 
-      detailbox.innerHTML = `
-        <p><strong>${selectedType}:</strong> ${selectedValue}</p>
-        <p><strong>Description:</strong> ${description}</p>
-      `;
+      // create a new list item for the selected item
+      const listItem = document.createElement('li');
+      listItem.innerHTML = `<strong>${selectedType}:</strong> ${selectedValue}, <strong>Description:</strong> ${description}`;
+
+      // append the list item to the list.
+      selectedItemsList.appendChild(listItem);
     }
   });
 </script>
