@@ -115,7 +115,11 @@ function updateCurrentData(newData) {
           <!-- Loop through the data and create table rows -->
           {
             currentData.map((item) => (
-              <tr data-sic={item.sic} data-pvt={item.pvt} data-description={item.name}>
+              <tr
+                data-sic={item.sic}
+                data-pvt={item.pvt}
+                data-description={item.name}
+              >
                 <td class="px-4 py-2 border border-black text-center">
                   <input type="radio" name="sic" class="radio" />
                 </td>
@@ -151,7 +155,7 @@ function updateCurrentData(newData) {
   const detailbox = document.getElementById("detail-box");
 
   detailbox.innerHTML = '<ul id="selected-items-list"></ul>';
-  const selectedItemsList = document.getElementById('selected-items-list');
+  const selectedItemsList = document.getElementById("selected-items-list");
 
   tableBody.addEventListener("click", (event) => {
     const target = event.target;
@@ -162,10 +166,10 @@ function updateCurrentData(newData) {
       const sic = row.dataset.sic;
       const pvt = row.dataset.pvt;
       const description = row.dataset.description;
-      console.log('row', row)
-      console.log('sic', sic)
-      console.log('pvt', pvt)
-      console.log('description', description)
+      console.log("row", row);
+      console.log("sic", sic);
+      console.log("pvt", pvt);
+      console.log("description", description);
 
       let selectedType = "";
       let selectedValue = "";
@@ -179,13 +183,33 @@ function updateCurrentData(newData) {
       }
 
       // create a new list item for the selected item
-      const listItem = document.createElement('li');
-      listItem.innerHTML = `<strong>${selectedType}:</strong> ${selectedValue}, <strong>Description:</strong> ${description}`;
+      // const listItem = document.createElement("li");
+      // listItem.innerHTML = `<strong>${selectedType}:</strong> ${selectedValue}, <strong>Description:</strong> ${description}`;
 
       // append the list item to the list.
-      selectedItemsList.appendChild(listItem);
+      // selectedItemsList.appendChild(listItem);
+
+      // Check if an item with the same type and value already exists
+      let existingItem = Array.from(selectedItemsList.children).find(
+        (item) =>
+          item.querySelector("strong:first-child").textContent ===
+            `${selectedType}:` &&
+          item.textContent.includes(` ${selectedValue}, `)
+      );
+
+      if (existingItem) {
+        // Item already exists, remove it
+        selectedItemsList.removeChild(existingItem);
+      } else {
+        // Item is new, add it to the list
+        const listItem = document.createElement("li");
+        listItem.innerHTML = `<strong>${selectedType}:</strong> ${selectedValue}, <strong>Description:</strong> ${description}`;
+        selectedItemsList.appendChild(listItem);
+      }
     }
   });
+
+  // Internal calculations for showing the prices.
 </script>
 
 <style>
