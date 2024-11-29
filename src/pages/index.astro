@@ -2,7 +2,9 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 // import Sidebar from "../components/Sidebar.astro";
+import PricePopup from "../components/PricePopup.astro";
 import MainContent from "../components/MainComponent.astro";
+import Footer from '../components/Footer.astro'
 ---
 
 <Layout title="Quote Builder Dashboard">
@@ -11,6 +13,8 @@ import MainContent from "../components/MainComponent.astro";
       <Header />
       <!-- <Sidebar /> -->
       <MainContent />
+      <PricePopup />
+      <Footer />
     </div>
   </main>
 </Layout>
