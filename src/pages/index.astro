@@ -1,36 +1,18 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
-// import Sidebar from "../components/Sidebar.astro";
 import PricePopup from "../components/PricePopup.astro";
-import MainContent from "../components/MainComponent.astro";
-import Footer from '../components/Footer.astro'
+import Footer from "../components/Footer.astro";
+import MainComponent from "../components/MainComponent.astro";
 ---
 
-<Layout title="Quote Builder Dashboard">
-  <main>
-    <div class="dashboard">
-      <Header />
-      <!-- <Sidebar /> -->
-      <MainContent />
-      <PricePopup />
-      <Footer />
-    </div>
-  </main>
+<Layout title="Quote Builder">
+  <div class="min-h-screen flex flex-col bg-gray-50">
+    <Header />
+    <main class="flex-1 container mx-auto px-4 py-8">
+      <MainComponent />
+    </main>
+    <PricePopup />
+    <Footer />
+  </div>
 </Layout>
-
-<style>
-  .dashboard {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    background-color: white;
-    color: black;
-  }
-
-  .main-container {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
-</style>
