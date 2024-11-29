@@ -9,336 +9,349 @@ import {
   Chiangmai,
 } from "astro:db";
 
-// fetching data from the selected table.
-const bangkok = await db.select().from(Bangkok);
-const pattaya = await db.select().from(Pattaya);
-const phuket = await db.select().from(Phuket);
-const krabi = await db.select().from(Krabi);
-const kohsamui = await db.select().from(Kohsamui);
-const chiangmai = await db.select().from(Chiangmai);
-
-// Store data in a way that's accessible to the client-side
-const locationsData = {
-  bangkok,
-  pattaya,
-  phuket,
-  krabi,
-  kohsamui,
-  chiangmai,
+const destinations = {
+  BANGKOK: await db.select().from(Bangkok),
+  PATTAYA: await db.select().from(Pattaya),
+  PHUKET: await db.select().from(Phuket),
+  KRABI: await db.select().from(Krabi),
+  KOHSAMUI: await db.select().from(Kohsamui),
+  CHIANGMAI: await db.select().from(Chiangmai),
 };
 
-// defining the columns that I want to display.
-const tableColumns = [
-  { name: "sic", type: "radio" },
-  { name: "pvt", type: "radio" },
-  { name: "Description", type: "text" },
-];
-
-// Initial data to display (Bangkok by default)
-let currentData = bangkok;
-
-// // Function to update currentData (make it reactive)
-function updateCurrentData(newData) {
-  currentData = newData;
-}
+const currentDestination = "BANGKOK";
 ---
 
-<div class="main-content">
-  <div class="message-container">
-    <p id="message">Welcome to Quote Builder</p>
-  </div>
-
-  <!-- User Inputs -->
-  <div class="user-inputs">
-    <div class="checkin-date" id="checkin-date">
-      <span>Check-in Date:</span>
-      <input type="date" id="check-in-date" name="check-in-date" />
+<div class="bg-white rounded-lg shadow-lg p-6">
+  <!-- Input Fields -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div>
+      <label class="block text-sm font-medium text-gray-700"
+        >Check-in Date</label
+      >
+      <input
+        type="date"
+        id="checkInDate"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+      />
     </div>
-
-    <div class="num-pax" id="num-pax">
-      <span>Number of Adults:</span>
+    <div>
+      <label class="block text-sm font-medium text-gray-700"
+        >Number of Adults</label
+      >
       <input
         type="number"
-        id="num-adults"
-        name="num-adults"
+        id="numAdults"
         min="1"
-        placeholder="Number of Adults"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
       />
     </div>
-
-    <div class="num-child" id="num-child">
-      <span>Number of Children:</span>
+    <div>
+      <label class="block text-sm font-medium text-gray-700"
+        >Number of Children</label
+      >
       <input
         type="number"
-        id="num-children"
-        name="num-children"
+        id="numChildren"
         min="0"
-        placeholder="Number of Children"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
       />
     </div>
-
-    <div class="'guest-name" id="guest-name">
-      <span>Guest Name:</span>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Guest Name</label>
       <input
         type="text"
-        id="guest-name"
-        name="guest-name"
-        placeholder="Guest Name"
+        id="guestName"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
       />
     </div>
   </div>
 
-  <!-- Filter Buttons for destination -->
-  <div class="filter-btn all-btn" id="filter-btn">
-    <button class="filter-btn-sub" name="phuket">Phuket</button>
-    <button class="filter-btn-sub" name="krabi">Krabi</button>
-    <button class="filter-btn-sub" name="pattaya">Pattaya</button>
-    <button class="filter-btn-sub" name="bangkok">Bangkok</button>
-    <button class="filter-btn-sub" name="kohsamui">Koh Samui</button>
-    <button class="filter-btn-sub" name="chiangmai">Chiang Mai</button>
-    <!-- <button class="filter-btn-sub" name='hotel'>Hotel</button> -->
-    <!-- <button class="filter-btn-sub" name='transfer'>Transfer</button> -->
+  <!-- Destination Buttons -->
+  <div class="flex flex-wrap justify-center gap-4 mb-8">
+    {
+      Object.keys(destinations).map((dest) => (
+        <button
+          class="px-6 py-2 rounded-full transition-colors duration-200 destination-btn"
+          data-destination={dest}
+        >
+          {dest}
+        </button>
+      ))
+    }
   </div>
 
-  <div class="grid grid-cols-2 gap-4 mb-4">
-    <div class="box p-4 bg-yellow-800">
-      <table class="table-auto w-full bg-white text-black border border-black">
-        <thead>
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Left Side: Attractions Table -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
           <tr>
-            <th class="px-4 py-2 border border-black">SIC</th>
-            <th class="px-4 py-2 border border-black">PVT</th>
-            <th class="px-4 py-2 border border-black">Description</th>
+            <th
+              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >SIC</th
+            >
+            <th
+              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >PVT</th
+            >
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >Description</th
+            >
           </tr>
         </thead>
-
-        <tbody class="rounded-md" id="table-body">
-          <!-- Loop through the data and create table rows -->
+        <tbody class="bg-white divide-y divide-gray-200" id="attractionsTable">
           {
-            currentData.map((item) => (
-              <tr
-                data-sic={item.sic}
-                data-pvt={item.pvt}
-                data-description={item.name}
-              >
-                <td class="px-4 py-2 border border-black text-center">
-                  <input type="radio" name="sic" class="radio" />
+            destinations[currentDestination].map((item) => (
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <input
+                    type="radio"
+                    name={`type_${item.id}`}
+                    class="attraction-select"
+                    data-type="sic"
+                    data-id={item.id}
+                    data-price={item.sic_cost_pp}
+                  />
                 </td>
-                <td class="px-4 py-2 border border-black text-center">
-                  <input type="radio" name="pvt" class="radio" />
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <input
+                    type="radio"
+                    name={`type_${item.id}`}
+                    class="attraction-select"
+                    data-type="pvt"
+                    data-id={item.id}
+                    data-price={item.transfer_rates_van}
+                  />
                 </td>
-                <td class="px-4 py-2 border border-black">{item.name}</td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-900">{item.name}</span>
+                </td>
               </tr>
             ))
           }
         </tbody>
       </table>
-      <!-- End of the table -->
     </div>
 
-    <!-- Selected info will show here in tabluar format. -->
-    <div id="detail-box" class="box p-4 bg-white-800">
-      <!-- how can i able to propogate the selected data from the above table -->
-    </div>
-    <!-- End of the format... -->
-
-    <!-- Reset & Submit Buttons -->
-    <div class="flex justify-end">
-      <button class="action-button mr-2">Reset</button>
-      <button class="action-button">Submit</button>
+    <!-- Right Side: Selected Items -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Selected Items</h3>
+      <div id="selectedItems" class="space-y-3">
+        <p class="text-gray-500 italic">No items selected</p>
+      </div>
+      <div class="mt-6 flex justify-end space-x-4">
+        <button
+          id="resetBtn"
+          class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+        >
+          Reset
+        </button>
+        <button
+          id="submitBtn"
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Submit
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<script is:inline>
-  // logic for detail-box handling...
-  const tableBody = document.getElementById("table-body");
-  const detailbox = document.getElementById("detail-box");
+<script>
+  // Initialize selectedItems as a global variable
+  window.selectedItems = new Map();
+  let currentDestination = "BANGKOK";
 
-  detailbox.innerHTML = '<ul id="selected-items-list"></ul>';
-  const selectedItemsList = document.getElementById("selected-items-list");
-
-  tableBody.addEventListener("click", (event) => {
-    const target = event.target;
-
-    // alert('click')
-    if (target.classList.contains("radio")) {
-      const row = target.closest("tr");
-      const sic = row.dataset.sic;
-      const pvt = row.dataset.pvt;
-      const description = row.dataset.description;
-      console.log("row", row);
-      console.log("sic", sic);
-      console.log("pvt", pvt);
-      console.log("description", description);
-
-      let selectedType = "";
-      let selectedValue = "";
-
-      if (target.name === "sic") {
-        selectedType = "SIC";
-        selectedValue = sic;
-      } else if (target.name === "pvt") {
-        selectedType = "PVT";
-        selectedValue = pvt;
-      }
-
-      // create a new list item for the selected item
-      // const listItem = document.createElement("li");
-      // listItem.innerHTML = `<strong>${selectedType}:</strong> ${selectedValue}, <strong>Description:</strong> ${description}`;
-
-      // append the list item to the list.
-      // selectedItemsList.appendChild(listItem);
-
-      // Check if an item with the same type and value already exists
-      let existingItem = Array.from(selectedItemsList.children).find(
-        (item) =>
-          item.querySelector("strong:first-child").textContent ===
-            `${selectedType}:` &&
-          item.textContent.includes(` ${selectedValue}, `)
+  async function updateAttractionsList(destination: string) {
+    try {
+      const response = await fetch(
+        `/api/attractions?destination=${destination}`
       );
-
-      if (existingItem) {
-        // Item already exists, remove it
-        selectedItemsList.removeChild(existingItem);
-      } else {
-        // Item is new, add it to the list
-        const listItem = document.createElement("li");
-        listItem.innerHTML = `<strong>${selectedType}:</strong> ${selectedValue}, <strong>Description:</strong> ${description}`;
-        selectedItemsList.appendChild(listItem);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.error || "Failed to fetch attractions");
+      }
+
+      const tableBody = document.getElementById("attractionsTable");
+      if (!tableBody) return;
+
+      tableBody.innerHTML = result.data
+        .map(
+          (item: any) => `
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-center">
+            <input 
+              type="radio" 
+              name="type_${item.id}"
+              class="attraction-select"
+              data-type="sic"
+              data-id="${item.id}"
+              data-price="${item.sic_cost_pp}"
+            />
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-center">
+            <input 
+              type="radio" 
+              name="type_${item.id}"
+              class="attraction-select"
+              data-type="pvt"
+              data-id="${item.id}"
+              data-price="${item.transfer_rates_van}"
+            />
+          </td>
+          <td class="px-6 py-4">
+            <span class="text-sm text-gray-900">${item.name}</span>
+          </td>
+        </tr>
+      `
+        )
+        .join("");
+
+      // Reattach event listeners
+      attachEventListeners();
+    } catch (error) {
+      console.error("Failed to fetch attractions:", error);
     }
+  }
+
+  function attachEventListeners() {
+    document.querySelectorAll(".attraction-select").forEach((input) => {
+      input.addEventListener("change", handleAttractionSelect);
+    });
+  }
+
+  function handleAttractionSelect(e: Event) {
+    const target = e.target as HTMLInputElement;
+    if (!target.classList.contains("attraction-select")) return;
+
+    const row = target.closest("tr");
+    if (!row) return;
+
+    const id = target.dataset.id;
+    const type = target.dataset.type;
+    const price = parseFloat(target.dataset.price || "0");
+    const description =
+      row.querySelector("td:last-child")?.textContent?.trim() || "";
+
+    if (target.checked && id) {
+      window.selectedItems.set(id, {
+        type: type?.toUpperCase(),
+        description,
+        price,
+      });
+    } else if (id) {
+      window.selectedItems.delete(id);
+    }
+
+    updateSelectedItemsDisplay();
+  }
+
+  // Handle destination button clicks
+  document.querySelectorAll(".destination-btn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      const target = e.target as HTMLButtonElement;
+      const dest = target.dataset.destination;
+      if (!dest) return;
+
+      document.querySelectorAll(".destination-btn").forEach((b) => {
+        b.classList.remove("bg-blue-500", "text-white");
+        b.classList.add("bg-gray-200", "text-gray-700");
+      });
+      target.classList.remove("bg-gray-200", "text-gray-700");
+      target.classList.add("bg-blue-500", "text-white");
+
+      currentDestination = dest;
+      await updateAttractionsList(dest);
+    });
   });
 
-  // Internal calculations for showing the prices.
+  // Initialize first button as active
+  document
+    .querySelector(".destination-btn")
+    ?.classList.add("bg-blue-500", "text-white");
+
+  // Reset button handler
+  document.getElementById("resetBtn")?.addEventListener("click", () => {
+    window.selectedItems.clear();
+    document.querySelectorAll(".attraction-select").forEach((input) => {
+      (input as HTMLInputElement).checked = false;
+    });
+    updateSelectedItemsDisplay();
+  });
+
+  // Submit button handler
+  document.getElementById("submitBtn")?.addEventListener("click", () => {
+    if (window.selectedItems.size === 0) {
+      alert("Please select at least one item");
+      return;
+    }
+
+    const total = calculateTotal();
+    const pricePopup = document.getElementById("pricePopup");
+    const totalElement = pricePopup?.querySelector("#total");
+    if (totalElement) {
+      totalElement.textContent = `$${total.toFixed(2)}`;
+    }
+    pricePopup?.classList.remove("hidden");
+  });
+
+  function updateSelectedItemsDisplay() {
+    const container = document.getElementById("selectedItems");
+    if (!container) return;
+
+    if (window.selectedItems.size === 0) {
+      container.innerHTML =
+        '<p class="text-gray-500 italic">No items selected</p>';
+      return;
+    }
+
+    const items = Array.from(window.selectedItems.values());
+    container.innerHTML = items
+      .map(
+        (item) => `
+      <div class="p-3 bg-gray-50 rounded-lg">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="inline-block px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">
+              ${item.type}
+            </span>
+            <p class="mt-1 text-sm text-gray-900">${item.description}</p>
+          </div>
+          <span class="text-sm font-medium text-gray-900">$${item.price.toFixed(2)}</span>
+        </div>
+      </div>
+    `
+      )
+      .join("");
+  }
+
+  function calculateTotal(): number {
+    return Array.from(window.selectedItems.values()).reduce(
+      (sum, item) => sum + item.price,
+      0
+    );
+  }
+
+  // Initial event listener attachment
+  attachEventListeners();
 </script>
 
 <style>
-  .main-content {
-    padding-top: 5rem;
-    margin-left: 1px;
-    background-color: whitesmoke;
-    color: black;
+  .destination-btn {
+    @apply bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors duration-200;
   }
 
-  .message-container {
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    background-color: grey;
-    border-radius: 4px;
+  .destination-btn.active {
+    @apply bg-blue-500 text-white;
   }
 
-  .user-inputs {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    align-items: center; /* Align items to the same baseline */
-  }
-
-  .user-inputs > div {
-    /* Target direct children for better control */
-    flex: 1; /* Distribute available space equally */
-    margin-bottom: 0; /* Remove default margin for better alignment */
-  }
-
-  .user-inputs span {
-    display: inline-block; /* Allow for width and margin */
-    margin-right: 0.5rem;
-  }
-
-  .user-inputs input {
-    padding: 0.5rem;
-    border: 1px solid #ccc; /* Use a lighter border color */
-    border-radius: 4px;
-    width: 100%; /* Ensure inputs take up full width */
-    box-sizing: border-box; /* Include padding and border in element's total width */
-  }
-
-  /* Optional: Placeholder styling for a modern feel */
-  .user-inputs input::placeholder {
-    color: black; /* Light gray placeholder text */
-  }
-
-  /* filter button css */
-  .all-btn {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-    align-content: center;
-  }
-
-  .filter-btn-sub {
-    box-sizing: border-box;
-    appearance: none;
-    background-color: transparent;
-    border: 2px solid #3498db;
-    border-radius: 0.6em;
-    color: #3498db;
-    cursor: pointer;
-    display: flex;
-    align-self: center;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1;
-    margin: 20px;
-    padding: 1.2em 2.8em;
-    text-decoration: none;
-    text-align: center;
-    text-transform: uppercase;
-    font-family: "Montserrat", sans-serif;
-    font-weight: 700;
-
-    &:hover,
-    &:focus {
-      color: #fff;
-      outline: 0;
-    }
-  }
-  .filter-btn-sub {
-    transition:
-      box-shadow 300ms ease-in-out,
-      color 300ms ease-in-out;
-    &:hover {
-      box-shadow: 0 0 40px 40px $red inset;
-    }
-  }
-
-  button {
-    margin-bottom: 1rem;
-    padding: 0.5rem 1rem;
-    background-color: #7971e4;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #4ea7df;
-  }
-
-  .options-container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .type-selection,
-  .option-selection,
-  .detail-selection {
-    margin-bottom: 1rem;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-
-  input[type="radio"],
-  input[type="checkbox"] {
-    margin-right: 0.5rem;
-  }
-
-  .selected-items {
-    margin-top: 1rem;
+  input[type="radio"] {
+    @apply w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500;
   }
 </style>
