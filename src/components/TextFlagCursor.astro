@@ -1,0 +1,173 @@
+---
+---
+
+<style>
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  class TextFlagCursor {
+    [x: string]: any;
+    constructor(options) {
+      this.options = options || {};
+      this.element = this.options.element || document.body;
+      this.text = this.options.text
+        ? " " + this.options.text
+        : " Your Text Here";
+      this.color = this.options.color || "#000000";
+      this.font = this.options.font || "monospace";
+      this.textSize = this.options.textSize || 12;
+      this.fontFamily = this.textSize + "px " + this.font;
+      this.gap = this.options.gap || this.textSize + 2;
+      this.angle = 0;
+      this.radiusX = 2;
+      this.radiusY = 5;
+      this.charArray = [];
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.cursor = { x: this.width / 2, y: this.width / 2 };
+      this.canvas = document.createElement("canvas");
+      this.context = this.canvas.getContext("2d");
+      this.animationFrame = null;
+      this.prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      );
+
+      for (let i = 0; i < this.text.length; i++) {
+        this.charArray[i] = {
+          letter: this.text.charAt(i),
+          x: this.width / 2,
+          y: this.width / 2,
+        };
+      }
+
+      this.init();
+    }
+
+    init() {
+      if (this.prefersReducedMotion.matches) {
+        console.log(
+          "This browser has prefers reduced motion turned on, so the cursor did not init"
+        );
+        return false;
+      }
+
+      this.canvas.style.top = "0px";
+      this.canvas.style.left = "0px";
+      this.canvas.style.pointerEvents = "none";
+
+      if (this.options.element) {
+        this.canvas.style.position = "absolute";
+        this.options.element.appendChild(this.canvas);
+        this.canvas.width = this.options.element.clientWidth;
+        this.canvas.height = this.options.element.clientHeight;
+      } else {
+        this.canvas.style.position = "fixed";
+        document.body.appendChild(this.canvas);
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+      }
+
+      this.bindEvents();
+      this.loop();
+    }
+
+    bindEvents() {
+      this.element.addEventListener("mousemove", this.onMouseMove.bind(this));
+      window.addEventListener("resize", this.onWindowResize.bind(this));
+    }
+
+    onWindowResize(e) {
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      if (this.options.element) {
+        this.canvas.width = this.options.element.clientWidth;
+        this.canvas.height = this.options.element.clientHeight;
+      } else {
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+      }
+    }
+
+    onMouseMove(e) {
+      if (this.options.element) {
+        const boundingRect = this.options.element.getBoundingClientRect();
+        this.cursor.x = e.clientX - boundingRect.left;
+        this.cursor.y = e.clientY - boundingRect.top;
+      } else {
+        this.cursor.x = e.clientX;
+        this.cursor.y = e.clientY;
+      }
+    }
+
+    updateParticles() {
+      if (!this.context) return;
+      this.context.clearRect(0, 0, this.width, this.height);
+      this.angle += 0.15;
+      let locX = this.radiusX * Math.cos(this.angle);
+      let locY = this.radiusY * Math.sin(this.angle);
+
+      for (let i = this.charArray.length - 1; i > 0; i--) {
+        this.charArray[i].x = this.charArray[i - 1].x + this.gap;
+        this.charArray[i].y = this.charArray[i - 1].y;
+        this.context.fillStyle = this.color;
+        this.context.font = this.fontFamily;
+        this.context.fillText(
+          this.charArray[i].letter,
+          this.charArray[i].x,
+          this.charArray[i].y
+        );
+      }
+
+      let x1 = this.charArray[0].x;
+      let y1 = this.charArray[0].y;
+      x1 += (this.cursor.x - x1) / 5 + locX + 2;
+      y1 += (this.cursor.y - y1) / 5 + locY;
+      this.charArray[0].x = x1;
+      this.charArray[0].y = y1;
+    }
+
+    loop() {
+      this.updateParticles();
+      this.animationFrame = requestAnimationFrame(this.loop.bind(this));
+    }
+
+    destroy() {
+      this.canvas.remove();
+      cancelAnimationFrame(this.animationFrame);
+      this.element.removeEventListener(
+        "mousemove",
+        this.onMouseMove.bind(this)
+      );
+      window.removeEventListener("resize", this.onWindowResize.bind(this));
+    }
+
+    handleReducedMotionChange() {
+      if (this.prefersReducedMotion.matches) {
+        this.destroy();
+      } else {
+        this.init();
+      }
+    }
+  }
+
+  const textFlagCursor = new TextFlagCursor({
+    text: "Trips And Trade!",
+    color: "#ff0000",
+    font: "Arial",
+    textSize: 20,
+    gap: 10,
+  });
+
+  window
+    .matchMedia("(prefers-reduced-motion: reduce)")
+    .addEventListener(
+      "change",
+      textFlagCursor.handleReducedMotionChange.bind(textFlagCursor)
+    );
+</script>
