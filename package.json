@@ -15,15 +15,12 @@
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
     "astro": "^4.16.4",
-    "body-parser": "^1.20.3",
     "cz-git": "^1.10.1",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "glyphicons": "^0.2.0",
-    "mysql2": "^3.11.3",
+    "dotenv": "^16.4.7",
     "nodemailer": "^6.9.16",
-    "tailwindcss": "^3.4.14",
-    "typescript": "^5.6.2"
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.6.2",
+    "zod": "^3.23.8"
   },
   "config": {
     "commitizen": {

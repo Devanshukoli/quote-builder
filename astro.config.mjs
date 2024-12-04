@@ -1,7 +1,13 @@
 import { defineConfig } from 'astro/config';
-import db from '@astrojs/db';
 import tailwind from '@astrojs/tailwind';
-// https://astro.build/config
+import node from '@astrojs/node';
+
+import db from '@astrojs/db';
+
 export default defineConfig({
-  integrations: [db(), tailwind()]
+  integrations: [tailwind(), db()],
+  output: 'server',
+  adapter: node({
+    mode: 'standalone'
+  })
 });
