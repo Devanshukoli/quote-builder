@@ -25,32 +25,26 @@ const currentDestination = "BANGKOK";
   <!-- Input Fields -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
     <div>
-      <label class="block text-sm font-medium text-gray-700"
-        >Check-in Date</label
-      >
-      <input
-        type="date"
+      <label class="block text-sm font-medium text-gray-700">Check-in Date</label>
+      <input 
+        type="date" 
         id="checkInDate"
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
       />
     </div>
     <div>
-      <label class="block text-sm font-medium text-gray-700"
-        >Number of Adults</label
-      >
-      <input
-        type="number"
+      <label class="block text-sm font-medium text-gray-700">Number of Adults</label>
+      <input 
+        type="number" 
         id="numAdults"
         min="1"
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
       />
     </div>
     <div>
-      <label class="block text-sm font-medium text-gray-700"
-        >Number of Children</label
-      >
-      <input
-        type="number"
+      <label class="block text-sm font-medium text-gray-700">Number of Children</label>
+      <input 
+        type="number" 
         id="numChildren"
         min="0"
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -58,8 +52,8 @@ const currentDestination = "BANGKOK";
     </div>
     <div>
       <label class="block text-sm font-medium text-gray-700">Guest Name</label>
-      <input
-        type="text"
+      <input 
+        type="text" 
         id="guestName"
         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
       />
@@ -87,50 +81,39 @@ const currentDestination = "BANGKOK";
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th
-              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >SIC</th
-            >
-            <th
-              class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >PVT</th
-            >
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >Description</th
-            >
+            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">SIC</th>
+            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">PVT</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200" id="attractionsTable">
-          {
-            destinations[currentDestination].map((item) => (
-              <tr class="hover:bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap text-center">
-                  <input
-                    type="radio"
-                    name={`type_${item.id}`}
-                    class="attraction-select"
-                    data-type="sic"
-                    data-id={item.id}
-                    data-price={item.sic_cost_pp}
-                  />
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-center">
-                  <input
-                    type="radio"
-                    name={`type_${item.id}`}
-                    class="attraction-select"
-                    data-type="pvt"
-                    data-id={item.id}
-                    data-price={item.transfer_rates_van}
-                  />
-                </td>
-                <td class="px-6 py-4">
-                  <span class="text-sm text-gray-900">{item.name}</span>
-                </td>
-              </tr>
-            ))
-          }
+          {destinations[currentDestination].map((item) => (
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-center">
+                <input 
+                  type="radio" 
+                  name={`type_${item.id}`}
+                  class="attraction-select"
+                  data-type="sic"
+                  data-id={item.id}
+                  data-price={item.sic_cost_pp}
+                />
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-center">
+                <input 
+                  type="radio" 
+                  name={`type_${item.id}`}
+                  class="attraction-select"
+                  data-type="pvt"
+                  data-id={item.id}
+                  data-price={item.transfer_rates_van}
+                />
+              </td>
+              <td class="px-6 py-4">
+                <span class="text-sm text-gray-900">{item.name}</span>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
@@ -142,16 +125,10 @@ const currentDestination = "BANGKOK";
         <p class="text-gray-500 italic">No items selected</p>
       </div>
       <div class="mt-6 flex justify-end space-x-4">
-        <button
-          id="resetBtn"
-          class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-        >
+        <button id="resetBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
           Reset
         </button>
-        <button
-          id="submitBtn"
-          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
+        <button id="submitBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
           Submit
         </button>
       </div>
@@ -166,24 +143,20 @@ const currentDestination = "BANGKOK";
 
   async function updateAttractionsList(destination: string) {
     try {
-      const response = await fetch(
-        `/api/attractions?destination=${destination}`
-      );
+      const response = await fetch(`/api/attractions?destination=${destination}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+      
       const result = await response.json();
       if (!result.success) {
-        throw new Error(result.error || "Failed to fetch attractions");
+        throw new Error(result.error || 'Failed to fetch attractions');
       }
 
-      const tableBody = document.getElementById("attractionsTable");
+      const tableBody = document.getElementById('attractionsTable');
       if (!tableBody) return;
 
-      tableBody.innerHTML = result.data
-        .map(
-          (item: any) => `
+      tableBody.innerHTML = result.data.map((item: any) => `
         <tr class="hover:bg-gray-50">
           <td class="px-6 py-4 whitespace-nowrap text-center">
             <input 
@@ -209,41 +182,38 @@ const currentDestination = "BANGKOK";
             <span class="text-sm text-gray-900">${item.name}</span>
           </td>
         </tr>
-      `
-        )
-        .join("");
+      `).join('');
 
       // Reattach event listeners
       attachEventListeners();
     } catch (error) {
-      console.error("Failed to fetch attractions:", error);
+      console.error('Failed to fetch attractions:', error);
     }
   }
 
   function attachEventListeners() {
-    document.querySelectorAll(".attraction-select").forEach((input) => {
-      input.addEventListener("change", handleAttractionSelect);
+    document.querySelectorAll('.attraction-select').forEach(input => {
+      input.addEventListener('change', handleAttractionSelect);
     });
   }
 
   function handleAttractionSelect(e: Event) {
     const target = e.target as HTMLInputElement;
-    if (!target.classList.contains("attraction-select")) return;
+    if (!target.classList.contains('attraction-select')) return;
 
-    const row = target.closest("tr");
+    const row = target.closest('tr');
     if (!row) return;
 
     const id = target.dataset.id;
     const type = target.dataset.type;
-    const price = parseFloat(target.dataset.price || "0");
-    const description =
-      row.querySelector("td:last-child")?.textContent?.trim() || "";
+    const price = parseFloat(target.dataset.price || '0');
+    const description = row.querySelector('td:last-child')?.textContent?.trim() || '';
 
     if (target.checked && id) {
       window.selectedItems.set(id, {
         type: type?.toUpperCase(),
         description,
-        price,
+        price
       });
     } else if (id) {
       window.selectedItems.delete(id);
@@ -253,68 +223,63 @@ const currentDestination = "BANGKOK";
   }
 
   // Handle destination button clicks
-  document.querySelectorAll(".destination-btn").forEach((btn) => {
-    btn.addEventListener("click", async (e) => {
+  document.querySelectorAll('.destination-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
       const target = e.target as HTMLButtonElement;
       const dest = target.dataset.destination;
       if (!dest) return;
 
-      document.querySelectorAll(".destination-btn").forEach((b) => {
-        b.classList.remove("bg-blue-500", "text-white");
-        b.classList.add("bg-gray-200", "text-gray-700");
+      document.querySelectorAll('.destination-btn').forEach(b => {
+        b.classList.remove('bg-blue-500', 'text-white');
+        b.classList.add('bg-gray-200', 'text-gray-700');
       });
-      target.classList.remove("bg-gray-200", "text-gray-700");
-      target.classList.add("bg-blue-500", "text-white");
-
+      target.classList.remove('bg-gray-200', 'text-gray-700');
+      target.classList.add('bg-blue-500', 'text-white');
+      
       currentDestination = dest;
       await updateAttractionsList(dest);
     });
   });
 
   // Initialize first button as active
-  document
-    .querySelector(".destination-btn")
-    ?.classList.add("bg-blue-500", "text-white");
+  document.querySelector('.destination-btn')?.classList.add('bg-blue-500', 'text-white');
 
   // Reset button handler
-  document.getElementById("resetBtn")?.addEventListener("click", () => {
+  document.getElementById('resetBtn')?.addEventListener('click', () => {
     window.selectedItems.clear();
-    document.querySelectorAll(".attraction-select").forEach((input) => {
+    document.querySelectorAll('.attraction-select').forEach(input => {
       (input as HTMLInputElement).checked = false;
     });
     updateSelectedItemsDisplay();
   });
 
   // Submit button handler
-  document.getElementById("submitBtn")?.addEventListener("click", () => {
+  document.getElementById('submitBtn')?.addEventListener('click', () => {
     if (window.selectedItems.size === 0) {
-      alert("Please select at least one item");
+      alert('Please select at least one item');
       return;
     }
 
     const total = calculateTotal();
-    const pricePopup = document.getElementById("pricePopup");
-    const totalElement = pricePopup?.querySelector("#total");
+    const pricePopup = document.getElementById('pricePopup');
+    const totalElement = pricePopup?.querySelector('#total');
     if (totalElement) {
       totalElement.textContent = `$${total.toFixed(2)}`;
     }
-    pricePopup?.classList.remove("hidden");
+    pricePopup?.classList.remove('hidden');
   });
 
   function updateSelectedItemsDisplay() {
-    const container = document.getElementById("selectedItems");
+    const container = document.getElementById('selectedItems');
     if (!container) return;
 
     if (window.selectedItems.size === 0) {
-      container.innerHTML =
-        '<p class="text-gray-500 italic">No items selected</p>';
+      container.innerHTML = '<p class="text-gray-500 italic">No items selected</p>';
       return;
     }
 
     const items = Array.from(window.selectedItems.values());
-    container.innerHTML = items
-      .map(
-        (item) => `
+    container.innerHTML = items.map(item => `
       <div class="p-3 bg-gray-50 rounded-lg">
         <div class="flex justify-between items-start">
           <div>
@@ -326,16 +291,11 @@ const currentDestination = "BANGKOK";
           <span class="text-sm font-medium text-gray-900">$${item.price.toFixed(2)}</span>
         </div>
       </div>
-    `
-      )
-      .join("");
+    `).join('');
   }
 
   function calculateTotal(): number {
-    return Array.from(window.selectedItems.values()).reduce(
-      (sum, item) => sum + item.price,
-      0
-    );
+    return Array.from(window.selectedItems.values()).reduce((sum, item) => sum + item.price, 0);
   }
 
   // Initial event listener attachment
